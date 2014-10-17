@@ -40,3 +40,6 @@ class Accomodation :
 			#traitement
 			weight += value
 		return weight
+
+	def full():
+		return maxFamily == self.listOfFamily.__len__()
