@@ -6,6 +6,7 @@ import sys
 from criteria import *
 from accomodation import *
 from family import *
+from functools import cmp_to_key
 import math
 import random
 
@@ -15,12 +16,14 @@ percentOfFamilies = 0.5
 numberOfMove = 100
 numberOfRounds = 2
 
-
 def move(family):
-	for destination in sorted(matrix.values(), key = lambda x : x.getScore(family.criterias), reverse = True):
+	if(family.accomodation == None):
+			print("whaaat")
+			sys.exit(0)
+	for destination in sorted(matrix.values(), key=lambda x: x.getScore(family), reverse=True):
 		if(not destination.full() and destination != family.accomodation):
 			print("tuple1 : " + str(destination.coordinates) + "tuple2 : " + str(family.accomodation.coordinates))
-			printMatrix(destination.coordinates, family.accomodation.coordinates)
+			printMatrix(family.accomodation.coordinates, destination.coordinates)
 			destination.addFamily(family)
 			family.accomodation.removeFamily(family)
 
@@ -28,15 +31,12 @@ def move(family):
 	return False
 
 def printMatrix(tuple1, tuple2):
-
 	for i in range(sizeMatrix):
 		for j in range(sizeMatrix):
 			if((i,j) == tuple1):
-				#blue
-				couleur = "\033[94m"
+				couleur = "\033[94m" #blue
 			elif((i,j) == tuple2):
-				#green
-				couleur = "\033[92m"
+				couleur = "\033[92m" #green
 			else:
 				couleur = ""
 			print(couleur + str(len(matrix[(i,j)].listOfFamily)) + "/" + str(matrix[(i,j)].maxFamily) + "\033[0m", end=' ')
@@ -59,10 +59,14 @@ print("numberOfAccomodationWithFamilies :" + str(numberOfAccomodationWithFamilie
 
 count = 0
 while(count < numberOfAccomodationWithFamilies):
-	i = math.floor(random.uniform(0,sizeMatrix))
-	j = math.floor(random.uniform(0,sizeMatrix))
-	if	(matrix[(i,j)].addFamily(Family(criterias["type"],3))):
-		count += 1
+	family = Family(criterias["type"],3)
+	while(True):
+		i = math.floor(random.uniform(0,sizeMatrix))
+		j = math.floor(random.uniform(0,sizeMatrix))
+		if	(matrix[(i,j)].addFamily(family)):
+			family.accomodation = matrix[(i,j)]
+			count += 1
+			break
 
 for i in range(numberOfRounds):
 	for f in Family.allFamilies:
