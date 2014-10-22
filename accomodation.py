@@ -8,32 +8,34 @@ from criteria import *
 class Accomodation :
 
 	#global number of accomodation
-	numberOfAccomodation = 0 
+	numberMaxOfFamilies = 0
 
-	def __init__(self, maxF): # Notre methode constructeur
+	def __init__(self, maxF, coordinates): # Notre methode constructeur
 
 		#nombre total d'accomodations - static
-		numberOfAccomodation += 1
+		Accomodation.numberMaxOfFamilies += maxF
 		#entier indiquant le nombre max de familles pouvant cohabiter dans ce logement
 		self.maxFamily = maxF
 		#liste contenant la ou les familles presentes dans ce logement
 		self.listOfFamily = list()
 		#dictionnaire des criteres : suffira de faire criterias["monCritere"] = ...
 		self.criterias = dict()
+		self.coordinates = coordinates
 
-	def addFamily(family):
-		if(maxFamily > self.listOfFamily.__len__()):
+	def addFamily(self, family):
+		if(self.maxFamily > len(self.listOfFamily)):
+			family.accomodation = self
 			self.listOfFamily.append(family)
 			return True
 		else:
 			return False
 
-	def delFamily(family):
+	def removeFamily(self, family):
 		try:
-			listOfFamily(family).remove()
+			self.listOfFamily.remove(family)
 			return True
-		except:
-			print ("impossible de supprimer l'element : " + family + "de la liste")
+		except Exception as e:
+			print ("impossible de supprimer l'element "+ str(family) +"de la liste" + str(e))
 			return False		
 
 	#récupération du "score" qu'obtient un logement au vu des criteres d'une famille souhaitant s'y installer		
@@ -54,9 +56,9 @@ class Accomodation :
 	-Ajout au score du logement de ponderation*logementVoisin : ponderation dependant de la distance entre logement et voisin
 
 	"""
-	def getScore(familyCriterias):
+	def getScore(self, familyCriterias):
 		finalScore = 0
-		averageByCriteria = dic()
+		averageByCriteria = dict()
 		i = 0
 
 		#Calcul de la moyenne par critere
@@ -73,6 +75,6 @@ class Accomodation :
 		
 		return finalScore
 
-	def full():
-		return maxFamily == self.listOfFamily.__len__()
+	def full(self):
+		return self.maxFamily == len(self.listOfFamily)
 

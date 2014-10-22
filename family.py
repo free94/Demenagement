@@ -1,34 +1,26 @@
 #!/usr/bin/python3.4
 # -*-coding:utf-8 -*
+from random import *
 
 """ Classe Famille """
 
-class family:
+class Family:
 	"I am a family"
 
 	#probability of the family want to move
-	limit = 10;
-
-	# Constructors
-	def __init__(self):
-		self.criterias = dict()
-
-	def __init__(self, limit):
-		self.criterias = dict()
-		limit = limit
-
-	def __init__(self, criterias = {}):
+	limit = 10
+	allFamilies = list()
+	# Constructor
+	def __init__(self, criterias, limit):
 		self.criterias = criterias
-
-	def __init__(self, criterias = {}, limit = 10):
-		self.criterias = criterias
-		limit = limit
-
+		Family.allFamilies.append(self)
+		Family.limit = limit
+		self.accomodation = None
 
 	def printf(self):
 		print("I am a family")
 
-	def decision()
-		return random.uniform(1,100) < limit
+	def decision(self):
+		return uniform(1,100) < Family.limit
 
 #function decision to know if the family move

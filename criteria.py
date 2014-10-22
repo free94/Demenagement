@@ -11,7 +11,7 @@ class Criteria:
 		self.influence = influence # [fonction, parametres...]
 
 	def score(self, averageInAccomodation, valueOfFamily):
-		return 1-influence({"valueOfFamily":valueOfFamily, "averageInAccomodation":averageInAccomodation}, "maxVal":maxVal)
+		return 1-influence({"valueOfFamily":valueOfFamily, "averageInAccomodation":averageInAccomodation, "maxVal":maxVal})
 
 
 #rules
