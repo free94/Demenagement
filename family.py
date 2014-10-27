@@ -17,9 +17,6 @@ class Family:
 		Family.limit = limit
 		self.accomodation = None
 
-	def printf(self):
-		print("I am a family")
-
 	def decision(self):
 		return uniform(1,100) < Family.limit
 

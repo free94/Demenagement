@@ -4,34 +4,34 @@
 import math
 
 class Criteria:
-	def __init__(self, weight, maxVal, rule, influence):
+	def __init__(self, weight, valuesRange, rule, influence):
 		self.weight = weight
-		self.maxVal = maxVal
+		self.valuesRange = valuesRange
 		self.rule = rule # minimize, egalize, maximize
 		self.influence = influence # [fonction, parametres...]
 
 	def score(self, averageInAccomodation, valueOfFamily):
-		return 1-influence({"valueOfFamily":valueOfFamily, "averageInAccomodation":averageInAccomodation, "maxVal":maxVal})
+		return 1-self.rule(self, {"valueOfFamily":valueOfFamily, "averageInAccomodation":averageInAccomodation, "valuesRange":self.valuesRange})
 
 
 #rules
 	@staticmethod
 	def egalize(cls, values):
-		return math.fabs(values["valueOfFamily"]-values["averageInAccomodation"]) / values["maxVal"]
+		return math.fabs(values["valueOfFamily"] - values["averageInAccomodation"]) / (values["valuesRange"][1] - values["valuesRange"][0]) 
 
 	@staticmethod
 	def inegalize(cls, values):
-		return 1-math.fabs(values["valueOfFamily"]-values["averageInAccomodation"]) / values["maxVal"]
-
-	@staticmethod
-	def minimize(cls, values):
-		return (values["maxVal"] - values["valueOfFamily"]) / values["maxVal"]
+		return 1-cls.egalize(values)
 
 	@staticmethod
 	def maximize(cls, values):
-		return (values["valueOfFamily"] - values["maxVal"]) / values["maxVal"]
+		return (values["valuesRange"][1] - values["valueOfFamily"]) / (values["valuesRange"][1] - values["valuesRange"][0])
+
+	@staticmethod
+	def minimize(cls, values):
+		return 1-cls.maximise(values)
 
 #influences
 	@staticmethod
-	def exp(dec, value):
+	def exp(cls, dec, value):
 		return math.exp(dec * value)

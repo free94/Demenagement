@@ -17,13 +17,11 @@ numberOfMove = 100
 numberOfRounds = 2
 
 def move(family):
-	if(family.accomodation == None):
-			print("whaaat")
-			sys.exit(0)
-	for destination in sorted(matrix.values(), key=lambda x: x.getScore(family), reverse=True):
+	for destination in sorted(matrix.values(), key=lambda x: x.getScore(family.criterias), reverse=True):
 		if(not destination.full() and destination != family.accomodation):
-			print("tuple1 : " + str(destination.coordinates) + "tuple2 : " + str(family.accomodation.coordinates))
+			#print("tuple1 : " + str(destination.coordinates) + "tuple2 : " + str(family.accomodation.coordinates))
 			printMatrix(family.accomodation.coordinates, destination.coordinates)
+			#printMatrixByType()
 			destination.addFamily(family)
 			family.accomodation.removeFamily(family)
 
@@ -43,23 +41,34 @@ def printMatrix(tuple1, tuple2):
 		print("")
 	print("")
 
+def printMatrixByType():
+	for i in range(sizeMatrix):
+		for j in range(sizeMatrix):
+			if(matrix[(i,j)].criteriaAveragesInAcc[criterias["type"]] > 1.5):
+				couleur = "\033[94m" #blue
+			else:
+				couleur = "\033[92m" #green
+			print(couleur + str(len(matrix[(i,j)].listOfFamily)) + "/" + str(matrix[(i,j)].maxFamily) + "\033[0m", end=' ')
+		print("")
+	print("")
+
 #Définition des critères
 criterias = {}
 criterias["type"] 	= Criteria(0.5, [1,2], Criteria.egalize, [Criteria.exp, -1])
-criterias["income"] = Criteria(0.5, [20,50], Criteria.maximize, [Criteria.exp, -1])
+#criterias["income"] = Criteria(0.5, [20,50], Criteria.maximize, [Criteria.exp, -1])
 
-#creation d'une matrice 50*50 de logements
+#creation d'une matrice de logements
 matrix = {}
 for i in range(sizeMatrix):
 	for j in range(sizeMatrix):
-		matrix[(i,j)] = Accomodation(int(random.uniform(1,sizeMaxAccomodation)), (i,j))
+		matrix[(i,j)] = Accomodation(int(random.uniform(1,sizeMaxAccomodation)), (i,j), criterias.values())
 
 numberOfAccomodationWithFamilies = int(percentOfFamilies * Accomodation.numberMaxOfFamilies)
 print("numberOfAccomodationWithFamilies :" + str(numberOfAccomodationWithFamilies))
 
 count = 0
 while(count < numberOfAccomodationWithFamilies):
-	family = Family(criterias["type"],3)
+	family = Family({criterias["type"]:random.choice([1,2])},3)
 	while(True):
 		i = math.floor(random.uniform(0,sizeMatrix))
 		j = math.floor(random.uniform(0,sizeMatrix))
