@@ -40,7 +40,7 @@ class Accomodation :
 			self.updateAverages()
 			return True
 		except Exception as e:
-			print ("impossible de supprimer l'element "+ str(family) +"de la liste" + str(e))
+			print ("impossible de supprimer l'element "+ str(family) +"de la liste -> " + str(e))
 			return False
 
 	#mise à jour des valeurs moyennes des critères pour le logement.
@@ -48,12 +48,14 @@ class Accomodation :
 		for criteria in self.criteriaAveragesInAcc.keys():
 			self.criteriaAveragesInAcc[criteria] = 0
 
-		for family in self.listOfFamily:
-			for criteria in self.criteriaAveragesInAcc.keys():
-				self.criteriaAveragesInAcc[criteria] += family.criterias[criteria]
+		#si le logement est vide : 0 famille, on décide de laisser à zéro les moyennes des critères du logement, sinon on maj	
+		if(len(self.listOfFamily) > 0) :
+			for family in self.listOfFamily:
+				for criteria in self.criteriaAveragesInAcc.keys():
+					self.criteriaAveragesInAcc[criteria] += family.criterias[criteria]
 
-		for criteria in self.criteriaAveragesInAcc.keys():
-			self.criteriaAveragesInAcc[criteria] = self.criteriaAveragesInAcc[criteria] / len(self.listOfFamily)
+			for criteria in self.criteriaAveragesInAcc.keys():
+				self.criteriaAveragesInAcc[criteria] = self.criteriaAveragesInAcc[criteria] / len(self.listOfFamily)
 
 	#score de l'immeuble selon ses valeurs moyennes de critères et les valeurs de la famille qui veut y emmenager
 	def getScore(self, familyValues):

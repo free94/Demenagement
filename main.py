@@ -22,8 +22,9 @@ def move(family):
 			#print("tuple1 : " + str(destination.coordinates) + "tuple2 : " + str(family.accomodation.coordinates))
 			printMatrix(family.accomodation.coordinates, destination.coordinates)
 			#printMatrixByType()
+			temp = family.accomodation
 			destination.addFamily(family)
-			family.accomodation.removeFamily(family)
+			temp.removeFamily(family)
 
 			return True
 	return False
@@ -32,9 +33,9 @@ def printMatrix(tuple1, tuple2):
 	for i in range(sizeMatrix):
 		for j in range(sizeMatrix):
 			if((i,j) == tuple1):
-				couleur = "\033[94m" #blue
+				couleur = "\033[94m" #blue = coordinates of the family
 			elif((i,j) == tuple2):
-				couleur = "\033[92m" #green
+				couleur = "\033[92m" #green = destination
 			else:
 				couleur = ""
 			print(couleur + str(len(matrix[(i,j)].listOfFamily)) + "/" + str(matrix[(i,j)].maxFamily) + "\033[0m", end=' ')
@@ -64,8 +65,9 @@ for i in range(sizeMatrix):
 		matrix[(i,j)] = Accomodation(int(random.uniform(1,sizeMaxAccomodation)), (i,j), criterias.values())
 
 numberOfAccomodationWithFamilies = int(percentOfFamilies * Accomodation.numberMaxOfFamilies)
-print("numberOfAccomodationWithFamilies :" + str(numberOfAccomodationWithFamilies))
+print("\nnumberOfAccomodationWithFamilies :" + str(numberOfAccomodationWithFamilies) + "\n")
 
+#remplissage de la matrice avec des familles : leur position est aléatoire dans la matrice
 count = 0
 while(count < numberOfAccomodationWithFamilies):
 	family = Family({criterias["type"]:random.choice([1,2])},3)
@@ -77,7 +79,9 @@ while(count < numberOfAccomodationWithFamilies):
 			count += 1
 			break
 
+#Demande à chaque famille "rounds" fois si elle veut déménager ou pas : si oui déménagement -> move()
 for i in range(numberOfRounds):
+	print("-*-*-*-*-*-*-*-*-*- Rounds " + str(i+1) + " -*-*-*-*-*-*-*-*-*-\n")
 	for f in Family.allFamilies:
 		if(f.decision()):
 			#print("famille qui veut move : " + str(f.accomodation.coordinates))
