@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
+import math
 from random import *
 from criteria import *
 	
@@ -67,3 +68,6 @@ class Accomodation :
 
 	def full(self):
 		return self.maxFamily == len(self.listOfFamily)
+
+	def distance(self, accomodation):
+		return math.sqrt(pow((self.coordinates[0] - accomodation.coordinates[0]),2) + pow((self.coordinates[1] - accomodation.coordinates[1])))
