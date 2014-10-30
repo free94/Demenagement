@@ -81,5 +81,6 @@ class Accomodation :
 	def full(self):
 		return self.maxFamily == len(self.listOfFamily)
 
+	#retourne la distance entre self et l'accomodation en parametre
 	def distance(self, accomodation):
 		return math.sqrt(pow((self.coordinates[0] - accomodation.coordinates[0]),2) + pow((self.coordinates[1] - accomodation.coordinates[1]),2))
