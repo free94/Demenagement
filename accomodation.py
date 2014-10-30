@@ -3,6 +3,7 @@
 import os
 import sys
 import math
+from main import *
 from random import *
 from criteria import *
 	
@@ -65,9 +66,20 @@ class Accomodation :
 			score += criteria.weight * criteria.score(self.criteriaAveragesInAcc[criteria], familyValues[criteria])
 		return score
 
+	#score de l'immeuble ajusté par celui de ses voisins
+	def getScoreWithDistrict(self, distanceLimit, familyValues, sizeMatrix, matrix):
+		score = 0
+		placeInTheDistrict = list()
+		for i in range(sizeMatrix):
+			for j in range(sizeMatrix):
+				if(self.distance(matrix[(i,j)]) < distanceLimit and matrix[(i,j)] != self):
+					score += matrix[(i,j)].getScore(familyValues) * (1 / self.distance(matrix[(i,j)]))
+					placeInTheDistrict.append((i,j))
+		printMatrix(matrix, placeInTheDistrict)
+		return score
 
 	def full(self):
 		return self.maxFamily == len(self.listOfFamily)
 
 	def distance(self, accomodation):
-		return math.sqrt(pow((self.coordinates[0] - accomodation.coordinates[0]),2) + pow((self.coordinates[1] - accomodation.coordinates[1])))
+		return math.sqrt(pow((self.coordinates[0] - accomodation.coordinates[0]),2) + pow((self.coordinates[1] - accomodation.coordinates[1]),2))

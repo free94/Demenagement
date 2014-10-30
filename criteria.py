@@ -33,5 +33,5 @@ class Criteria:
 
 #influences
 	@staticmethod
-	def exp(cls, dec, value):
-		return math.exp(dec * value)
+	def exp(cls, dec, distance):
+		return math.exp(dec * distance)
