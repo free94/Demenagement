@@ -60,10 +60,11 @@ class Accomodation :
 				self.criteriaAveragesInAcc[criteria] = self.criteriaAveragesInAcc[criteria] / len(self.listOfFamily)
 
 	#score de l'immeuble selon ses valeurs moyennes de critères et les valeurs de la famille qui veut y emmenager
-	def getScore(self, familyValues):
+	#le parametre fromAcc est le logement à partir duquel le score est calculé. Dans le calcul du score intrinsèque, fromAcc doit être égal à self. Dans le calcul de l'influence, on fromAcc est le logement influencé par self.
+	def getScore(self, familyValues, fromAcc):
 		score = 0
 		for criteria in self.criteriaAveragesInAcc.keys():
-			score += criteria.weight * criteria.score(self.criteriaAveragesInAcc[criteria], familyValues[criteria])
+			score += criteria.weight * criteria.score(self.criteriaAveragesInAcc[criteria], familyValues[criteria]) * criteria.influence(self.distance(fromAcc))
 		return score
 
 	#score de l'immeuble ajusté par celui de ses voisins
@@ -73,7 +74,7 @@ class Accomodation :
 		for i in range(sizeMatrix):
 			for j in range(sizeMatrix):
 				if(self.distance(matrix[(i,j)]) < distanceLimit and matrix[(i,j)] != self):
-					score += matrix[(i,j)].getScore(familyValues) * (1 / self.distance(matrix[(i,j)]))
+					score += matrix[(i,j)].getScore(familyValues, matrix[(i,j)]) * (1 / self.distance(matrix[(i,j)]))
 					placeInTheDistrict.append((i,j))
 		printMatrix(matrix, placeInTheDistrict)
 		return score

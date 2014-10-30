@@ -8,30 +8,30 @@ class Criteria:
 		self.weight = weight
 		self.valuesRange = valuesRange
 		self.rule = rule # minimize, egalize, maximize
-		self.influence = influence # [fonction, parametres...]
+		self.influence = influence #fonction
 
 	def score(self, averageInAccomodation, valueOfFamily):
-		return 1-self.rule(self, {"valueOfFamily":valueOfFamily, "averageInAccomodation":averageInAccomodation, "valuesRange":self.valuesRange})
+		return 1-self.rule({"valueOfFamily":valueOfFamily, "averageInAccomodation":averageInAccomodation, "valuesRange":self.valuesRange})
 
 
 #rules
 	@staticmethod
-	def egalize(cls, values):
+	def egalize(values):
 		return math.fabs(values["valueOfFamily"] - values["averageInAccomodation"]) / (values["valuesRange"][1] - values["valuesRange"][0]) 
 
 	@staticmethod
-	def inegalize(cls, values):
+	def inegalize(values):
 		return 1-cls.egalize(values)
 
 	@staticmethod
-	def maximize(cls, values):
+	def maximize(values):
 		return (values["valuesRange"][1] - values["valueOfFamily"]) / (values["valuesRange"][1] - values["valuesRange"][0])
 
 	@staticmethod
-	def minimize(cls, values):
+	def minimize(values):
 		return 1-cls.maximise(values)
 
 #influences
 	@staticmethod
-	def exp(cls, dec, distance):
-		return math.exp(dec * distance)
+	def exp(distance):
+		return math.exp(-distance)
