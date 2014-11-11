@@ -14,6 +14,7 @@ sizeMatrix = 10
 sizeMaxAccomodation = 9
 percentOfFamilies = 0.5
 numberOfRounds = 200
+firstMatrix = str()
 
 def move(family):
 	scores = computeScores(family.criterias)
@@ -80,6 +81,12 @@ def printMatrix(matrix, listTuple):
 
 
 def printMatrixByType():
+	first = False
+	#si c'est la première matrice
+	global firstMatrix
+	if(not firstMatrix):
+		first = True
+		firstMatrix += "\n**********The first matrix was **********\n\n"
 	for i in range(sizeMatrix):
 		for j in range(sizeMatrix):
 			if(len(matrix[(i,j)].listOfFamily) == 0):
@@ -89,8 +96,13 @@ def printMatrixByType():
 			else:
 				couleur = "\033[92m" #green
 			print(couleur + str(len(matrix[(i,j)].listOfFamily)) + "/" + str(matrix[(i,j)].maxFamily) + "\033[0m", end=' ')
+			if(first):
+					firstMatrix += couleur + str(len(matrix[(i,j)].listOfFamily)) + "/" + str(matrix[(i,j)].maxFamily) + "\033[0m" + " "
 		print("")
+		if(first):
+			firstMatrix += "\n"
 	print("")
+
 
 
 #------------------------------------------------------------------------------------------------------------------------
@@ -135,6 +147,6 @@ if __name__ == '__main__':
 		printMatrixByType()
 
 	family = Family({criterias["type"]:random.choice([1,2])},3)
-
+	print(firstMatrix)
 	#print(matrix[(5,7)].getScore(family.criterias))
 	#print(matrix[(5,7)].getScoreWithDistrict(5, family.criterias, sizeMatrix, matrix))

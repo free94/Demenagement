@@ -68,7 +68,7 @@ class Accomodation :
 		return score
 
 	#score de l'immeuble ajusté par celui de ses voisins
-	def getScoreWithDistrict(self, distanceLimit, familyValues, sizeMatrix, matrix):
+	"""def getScoreWithDistrict(self, distanceLimit, familyValues, sizeMatrix, matrix):
 		score = 0
 		placeInTheDistrict = list()
 		for i in range(sizeMatrix):
@@ -76,9 +76,11 @@ class Accomodation :
 				if(self.distance(matrix[(i,j)]) < distanceLimit and matrix[(i,j)] != self):
 					score += matrix[(i,j)].getScore(familyValues, matrix[(i,j)]) * (1 / self.distance(matrix[(i,j)]))
 					placeInTheDistrict.append((i,j))
+		print("****************************")
 		printMatrix(matrix, placeInTheDistrict)
+		print("****************************")
 		return score
-
+		"""
 	def full(self):
 		return self.maxFamily == len(self.listOfFamily)
 
