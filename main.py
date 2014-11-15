@@ -13,7 +13,7 @@ import random
 sizeMatrix = 10
 sizeMaxAccomodation = 9
 percentOfFamilies = 0.5
-numberOfRounds = 200
+numberOfRounds = 1000
 
 def move(family):
 	scores = computeScores(family.criterias)
@@ -50,6 +50,13 @@ def computeScores(familyValues):
 		for j in range(sizeMatrix):
 			res[(i,j)] = inherentScores[(i,j)] + influencedScores[(i,j)]
 	return res
+
+def matrixCriteria(matrix, criteria):
+	return {k : v.criteriaAveragesInAcc[criteria] for k,v in matrix}
+
+def matrixNbFamilies(matrix, criteria):
+	return {k : len(v.listOfFamily) for k,v in matrix}
+
 
 #affichage matrice avec mise en relief des n tuples de la liste
 def printMatrix(matrix, listTuple):
@@ -101,7 +108,7 @@ if __name__ == '__main__':
 	#Définition des critères
 	criterias = {}
 	criterias["type"] 	= Criteria(0.5, [1,2], Criteria.egalize, Criteria.exp)
-	#criterias["income"] = Criteria(0.5, [20,50], Criteria.maximize, Criteria.exp)
+	criterias["income"] = Criteria(0.5, [20,50], Criteria.maximize, Criteria.exp)
 
 	#creation d'une matrice de logements
 	matrix = {}
@@ -115,11 +122,11 @@ if __name__ == '__main__':
 	#remplissage de la matrice avec des familles : leur position est aléatoire dans la matrice
 	count = 0
 	while(count < numberOfAccomodationWithFamilies):
-		family = Family({criterias["type"]:random.choice([1,2])},3)
+		family = Family({criterias["income"]:int(random.uniform(20,50))},3)
 		while(True):
 			i = math.floor(random.uniform(0,sizeMatrix))
 			j = math.floor(random.uniform(0,sizeMatrix))
-			if	(matrix[(i,j)].addFamily(family)):
+			if(matrix[(i,j)].addFamily(family)):
 				family.accomodation = matrix[(i,j)]
 				count += 1
 				break
