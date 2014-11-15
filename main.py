@@ -119,7 +119,7 @@ def printMatrixByType():
 if __name__ == '__main__':
 	#Définition des critères
 	criterias = {}
-	criterias["type"] 	= Criteria(0.5, [1,2], Criteria.egalize, Criteria.exp)
+	#criterias["type"] 	= Criteria(0.5, [1,2], Criteria.egalize, Criteria.exp)
 	criterias["income"] = Criteria(0.5, [20,50], Criteria.maximize, Criteria.exp)
 
 	#creation d'une matrice de logements
@@ -143,7 +143,7 @@ if __name__ == '__main__':
 				count += 1
 				break
 
-	printMatrixByType()
+	#printMatrixByType()
 	#Demande à chaque famille "rounds" fois si elle veut déménager ou pas : si oui déménagement -> move()
 	for i in range(numberOfRounds):
 		print("============== Rounds " + str(i+1) + " ===============\n")
@@ -151,7 +151,7 @@ if __name__ == '__main__':
 			if(f.decision()):
 				#print("famille qui veut move : " + str(f.accomodation.coordinates))
 				move(f)
-		printMatrixByType()
+		#printMatrixByType()
 
 	family = Family({criterias["type"]:random.choice([1,2])},3)
 	print(firstMatrix)
