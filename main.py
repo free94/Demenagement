@@ -10,21 +10,20 @@ from functools import cmp_to_key
 import math
 import random
 
-sizeMatrix = 10
-sizeMaxAccomodation = 9
-percentOfFamilies = 0.5
+sizeMatrix = 8
+sizeMaxAccomodation = 2
+percentOfFamilies = 0.2
 numberOfRounds = 200
 firstMatrix = str()
 
 def move(family):
 	scores = computeScores(family.criterias)
 	for destination in sorted(matrix.values(), key=lambda x: scores[x.coordinates], reverse=True):
-		if(not destination.full() and destination != family.accomodation):
-			#print("tuple1 : " + str(destination.coordinates) + "tuple2 : " + str(family.accomodation.coordinates))
-			#printMatrix(matrix, [family.accomodation.coordinates, destination.coordinates])
-			temp = family.accomodation
-			destination.addFamily(family)
-			temp.removeFamily(family)
+		if(not destination.full()):
+			if(destination != family.accomodation):
+				temp = family.accomodation
+				destination.addFamily(family)
+				temp.removeFamily(family)
 
 			return True
 	return False
@@ -53,7 +52,7 @@ def computeScores(familyValues):
 	return res
 
 def matrixCriteria(matrix, criteria):
-	return {k : v.criteriaAveragesInAcc[criteria] for k,v in matrix}
+	return {k : v.criteriaAveragesInAcc[criteria] for k, v in matrix.items()}
 
 def matrixNbFamilies(matrix, criteria):
 	return {k : len(v.listOfFamily) for k,v in matrix}
@@ -115,26 +114,28 @@ def printMatrixByType():
 #------------------------------------------------------------------------------------------------------------------------
 #----------------------------------------------------------main----------------------------------------------------------
 #------------------------------------------------------------------------------------------------------------------------
+#Définition des critères
+criterias = {}
+#creation d'une matrice de logements
+matrix = {}
+numberOfAccomodationWithFamilies = 0
 
-if __name__ == '__main__':
-	#Définition des critères
-	criterias = {}
-	#criterias["type"] 	= Criteria(0.5, [1,2], Criteria.egalize, Criteria.exp)
-	criterias["income"] = Criteria(0.5, [20,50], Criteria.maximize, Criteria.exp)
+def init():
 
-	#creation d'une matrice de logements
-	matrix = {}
+	criterias["type"] 	= Criteria(1, [1,2], Criteria.egalize, Criteria.exp)
+	# criterias["income"] = Criteria(0.5, [20,50], Criteria.egalize, Criteria.exp)
+
 	for i in range(sizeMatrix):
 		for j in range(sizeMatrix):
 			matrix[(i,j)] = Accomodation(int(random.uniform(1,sizeMaxAccomodation)), (i,j), criterias.values())
 
 	numberOfAccomodationWithFamilies = int(percentOfFamilies * Accomodation.numberMaxOfFamilies)
-	print("\nnumberOfAccomodationWithFamilies :" + str(numberOfAccomodationWithFamilies) + "\n")
 
 	#remplissage de la matrice avec des familles : leur position est aléatoire dans la matrice
 	count = 0
 	while(count < numberOfAccomodationWithFamilies):
-		family = Family({criterias["income"]:int(random.uniform(20,50))},3)
+		# family = Family({criterias["income"]:int(random.uniform(20,50))},3)
+		family = Family({criterias["type"]:int(random.choice([-1, 1]))},3)
 		while(True):
 			i = math.floor(random.uniform(0,sizeMatrix))
 			j = math.floor(random.uniform(0,sizeMatrix))
@@ -143,17 +144,8 @@ if __name__ == '__main__':
 				count += 1
 				break
 
-	#printMatrixByType()
-	#Demande à chaque famille "rounds" fois si elle veut déménager ou pas : si oui déménagement -> move()
-	for i in range(numberOfRounds):
-		print("============== Rounds " + str(i+1) + " ===============\n")
+
+def round():
 		for f in Family.allFamilies:
 			if(f.decision()):
-				#print("famille qui veut move : " + str(f.accomodation.coordinates))
 				move(f)
-		#printMatrixByType()
-
-	family = Family({criterias["type"]:random.choice([1,2])},3)
-	print(firstMatrix)
-	#print(matrix[(5,7)].getScore(family.criterias))
-	#print(matrix[(5,7)].getScoreWithDistrict(5, family.criterias, sizeMatrix, matrix))

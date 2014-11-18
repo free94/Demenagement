@@ -1,13 +1,14 @@
 from tkinter import *
 from chart import *
+from main import *
 import random, sys, math
 
-def do(data, canvas, width, g, after=0):
-  swapr(data)
+def do(canvas, width, g, after=0):
+  round()
   canvas.delete('all')
-  chart(data, canvas, width, g)
+  chart(normalize(matrixCriteria(matrix, criterias['type'])), canvas, width, g)
   canvas.update()
-  root.after(after, do, data, canvas, width, g)
+  root.after(after, do, canvas, width, g)
 
 def randomize(size):
   data = {}
@@ -32,12 +33,13 @@ def onmove(event, canvas):
 
 size = 32
 csize = 640
-data = randomize(size)
+
+init()
 
 root = Tk()
 root.wm_title('Window')
 canvas = Canvas(root, width=csize, height=csize)
 canvas.pack()
 # canvas.bind('<Motion>', lambda event : onmove(event, canvas))
-do(data, canvas, csize, gradients['green to red'])
+do(canvas, csize, gradients['cyan to black'])
 mainloop()

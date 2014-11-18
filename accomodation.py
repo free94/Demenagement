@@ -6,7 +6,7 @@ import math
 from main import *
 from random import *
 from criteria import *
-	
+
 class Accomodation :
 
 	#global number of accomodation
@@ -50,7 +50,7 @@ class Accomodation :
 		for criteria in self.criteriaAveragesInAcc.keys():
 			self.criteriaAveragesInAcc[criteria] = 0
 
-		#si le logement est vide : 0 famille, on décide de laisser à zéro les moyennes des critères du logement, sinon on maj	
+		#si le logement est vide : 0 famille, on décide de laisser à zéro les moyennes des critères du logement, sinon on maj
 		if(len(self.listOfFamily) > 0) :
 			for family in self.listOfFamily:
 				for criteria in self.criteriaAveragesInAcc.keys():
@@ -86,4 +86,4 @@ class Accomodation :
 
 	#retourne la distance entre self et l'accomodation en parametre
 	def distance(self, accomodation):
-		return math.sqrt(pow((self.coordinates[0] - accomodation.coordinates[0]),2) + pow((self.coordinates[1] - accomodation.coordinates[1]),2))
+		return self.coordinates[0] - accomodation.coordinates[0] + self.coordinates[1] - accomodation.coordinates[1]
