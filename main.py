@@ -9,21 +9,26 @@ from family import *
 import math
 import random
 
-<<<<<<< HEAD
 sizeMatrix = 16
 sizeMaxAccomodation = 1
-=======
-sizeMatrix = 10
-sizeMaxAccomodation = 5
->>>>>>> 03ae221186766b1b8bdefc32757af23a84f1b9f0
 percentOfFamilies = 0.2
 numberOfRounds = 200
 firstMatrix = str()
 
 #TUTO COMPLET ET CLAIR POUR OPTIMISATION PYTHON : http://nliautaud.fr/wiki/articles/python_benchmark
 
+def fcount():
+	c = 0
+	for a in matrix.values():
+		c += len(a.listOfFamily)
+	return c
+
 def move(family):
-	scores = computeScores(family.criterias)
+	scores = computeScores(family)
+	# print(family.accomodation.coordinates)
+	# for d in sorted(matrix.values(), key=lambda x: scores[x.coordinates], reverse=True):
+	# 	print((d.coordinates, scores[d.coordinates]))
+	# sys.exit()
 	for destination in sorted(matrix.values(), key=lambda x: scores[x.coordinates], reverse=True):
 		if destination == family.accomodation:
 			return False
@@ -34,19 +39,25 @@ def move(family):
 			return True
 	return False
 
-def computeScores(familyValues):
+def computeScores(family):
 	# score propre à un logement sans se soucier des logements voisins
 	inherentScores = {}
+	# print(family.accomodation.coordinates)
 	for p, a in matrix.items():
-		inherentScores[p] = None if a.empty() else a.getScores(familyValues)
-
+		if a.empty():
+			continue
+		inherentScores[p] = a.getMyScores(family.criterias) if family.accomodation is a else a.getScores(family.criterias)
+		# print((p, inherentScores[p]))
 	# influence des logements voisins
+	# sys.exit()
 	scores = {}
 	for p1, a1 in matrix.items():
 		scores[p1] = 0
 		for p2, a2 in matrix.items():
+			if a2.empty() or family.accomodation is a2:
+				continue
 			for criteria in criterias.values():
-				scores[p1] += criteria.weight * (0 if a2.empty() else inherentScores[p2][criteria]) *  criteria.influence(a1.distance(a2))
+				scores[p1] += criteria.weight * inherentScores[p2][criteria] *  criteria.influence(a1.distance(a2))
 		scores[p1] /= sizeMatrix ** 2
 	return scores
 
@@ -121,7 +132,7 @@ numberOfAccomodationWithFamilies = 0
 
 def init():
 
-	criterias["type"] 	= Criteria(1, [-1,1], Criteria.egalize, Criteria.exp)
+	criterias["type"] 	= Criteria(1, [1,2], Criteria.egalize, Criteria.exp)
 	# criterias["income"] = Criteria(0.5, [20,50], Criteria.egalize, Criteria.exp)
 
 	for i in range(sizeMatrix):
@@ -145,6 +156,6 @@ def init():
 
 
 def round():
-		for f in Family.allFamilies:
-			if(f.decision()):
-				move(f)
+	for f in Family.allFamilies:
+		if(f.decision()):
+			move(f)

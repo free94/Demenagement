@@ -52,7 +52,7 @@ class Accomodation :
 		if not self.empty():
 			self.criteriaAveragesInAcc = { c : (a *(len(self.listOfFamily)-1) - family.criterias[c]) / len(self.listOfFamily) for c,a in self.criteriaAveragesInAcc.items()}
 		else:
-			self.criteriaAveragesInAcc = { c : 0 for c in self.criteriaAveragesInAcc.keys() }
+			self.criteriaAveragesInAcc = { c : None for c in self.criteriaAveragesInAcc.keys() }
 
 	#mise à jour des valeurs moyennes des critères pour le logement.
 	def updateAverages(self):
@@ -74,6 +74,16 @@ class Accomodation :
 		scores = {}
 		for criteria in self.criteriaAveragesInAcc.keys():
 			scores[criteria] = criteria.score(self.criteriaAveragesInAcc[criteria], familyValues[criteria])
+		return scores
+
+	def getMyScores(self, familyValues):
+		scores = {}
+		for criteria in self.criteriaAveragesInAcc.keys():
+			if len(self.listOfFamily) - 1 > 0:
+				value = (self.criteriaAveragesInAcc[criteria] * (len(self.listOfFamily)) - familyValues[criteria]) / (len(self.listOfFamily) - 1)
+				scores[criteria] = criteria.score(value, familyValues[criteria])
+			else:
+				scores[criteria] = None
 		return scores
 
 	#score de l'immeuble ajusté par celui de ses voisins
@@ -98,4 +108,4 @@ class Accomodation :
 
 	#retourne la distance entre self et l'accomodation en parametre
 	def distance(self, accomodation):
-		return self.coordinates[0] - accomodation.coordinates[0] + self.coordinates[1] - accomodation.coordinates[1]
+		return math.fabs(self.coordinates[0] - accomodation.coordinates[0]) + math.fabs(self.coordinates[1] - accomodation.coordinates[1])
