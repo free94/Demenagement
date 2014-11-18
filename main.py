@@ -9,11 +9,18 @@ from family import *
 import math
 import random
 
+<<<<<<< HEAD
 sizeMatrix = 16
 sizeMaxAccomodation = 1
+=======
+sizeMatrix = 10
+sizeMaxAccomodation = 5
+>>>>>>> 03ae221186766b1b8bdefc32757af23a84f1b9f0
 percentOfFamilies = 0.2
 numberOfRounds = 200
 firstMatrix = str()
+
+#TUTO COMPLET ET CLAIR POUR OPTIMISATION PYTHON : http://nliautaud.fr/wiki/articles/python_benchmark
 
 def move(family):
 	scores = computeScores(family.criterias)
