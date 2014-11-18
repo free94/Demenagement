@@ -16,7 +16,7 @@ def normalize(data):
   l, u = min(data.values()), max(data.values())
   return {p: (d - l) / (u - l) for p, d in data.items()}
 
-def chart(data, canvas, width, colors=[(0, 0, 0), (1, 1, 1)], highlight=False, border=1):
+def chart(data, canvas, width, colors=[(0, 0, 0), (1, 1, 1)], default=(0, 0, 0), highlight=False, border=1):
   """
   Tracer des donnees
   data : matrice de donnees
@@ -26,7 +26,7 @@ def chart(data, canvas, width, colors=[(0, 0, 0), (1, 1, 1)], highlight=False, b
   """
   s = width / math.sqrt(len(data))
   for p, d in data.items():
-    c = '#%02x%02x%02x' % tuple(c * 255 for c in color(colors, d))
+    c = '#%02x%02x%02x' % (default if d is None else tuple(c * 255 for c in color(colors, d)))
     draw(p, canvas, s, c, border, '#fff' if highlight else c, '#fff', d)
 
 def draw(position, canvas, size, color, border, outline, active, tags):

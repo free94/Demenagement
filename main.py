@@ -6,12 +6,11 @@ import sys
 from criteria import *
 from accomodation import *
 from family import *
-from functools import cmp_to_key
 import math
 import random
 
-sizeMatrix = 8
-sizeMaxAccomodation = 2
+sizeMatrix = 16
+sizeMaxAccomodation = 1
 percentOfFamilies = 0.2
 numberOfRounds = 200
 firstMatrix = str()
@@ -19,37 +18,30 @@ firstMatrix = str()
 def move(family):
 	scores = computeScores(family.criterias)
 	for destination in sorted(matrix.values(), key=lambda x: scores[x.coordinates], reverse=True):
+		if destination == family.accomodation:
+			return False
 		if(not destination.full()):
-			if(destination != family.accomodation):
-				temp = family.accomodation
-				destination.addFamily(family)
-				temp.removeFamily(family)
-
+			temp = family.accomodation
+			destination.addFamily(family)
+			temp.removeFamily(family)
 			return True
 	return False
 
 def computeScores(familyValues):
 	# score propre à un logement sans se soucier des logements voisins
 	inherentScores = {}
-	for i in range(sizeMatrix):
-		for j in range(sizeMatrix):
-			inherentScores[(i,j)] = matrix[(i,j)].getScore(familyValues, matrix[(i,j)])
+	for p, a in matrix.items():
+		inherentScores[p] = None if a.empty() else a.getScores(familyValues)
+
 	# influence des logements voisins
-	influencedScores = {}
-	for i in range(sizeMatrix):
-		for j in range(sizeMatrix):
-			influencedScores[(i,j)] = 0
-			for i2 in range(sizeMatrix):
-				for j2 in range(sizeMatrix):
-					if((i,j) != (i2,j2)):
-						influencedScores[(i,j)] += matrix[(i,j)].getScore(familyValues, matrix[(i2,j2)])
-			influencedScores[(i,j)] /= (sizeMatrix ** 2 - 1)
-	# score prenant en compte le score du logement et l'influence des logements voisins
-	res = {}
-	for i in range(sizeMatrix):
-		for j in range(sizeMatrix):
-			res[(i,j)] = inherentScores[(i,j)] + influencedScores[(i,j)]
-	return res
+	scores = {}
+	for p1, a1 in matrix.items():
+		scores[p1] = 0
+		for p2, a2 in matrix.items():
+			for criteria in criterias.values():
+				scores[p1] += criteria.weight * (0 if a2.empty() else inherentScores[p2][criteria]) *  criteria.influence(a1.distance(a2))
+		scores[p1] /= sizeMatrix ** 2
+	return scores
 
 def matrixCriteria(matrix, criteria):
 	return {k : v.criteriaAveragesInAcc[criteria] for k, v in matrix.items()}
@@ -122,7 +114,7 @@ numberOfAccomodationWithFamilies = 0
 
 def init():
 
-	criterias["type"] 	= Criteria(1, [1,2], Criteria.egalize, Criteria.exp)
+	criterias["type"] 	= Criteria(1, [-1,1], Criteria.egalize, Criteria.exp)
 	# criterias["income"] = Criteria(0.5, [20,50], Criteria.egalize, Criteria.exp)
 
 	for i in range(sizeMatrix):
@@ -135,7 +127,7 @@ def init():
 	count = 0
 	while(count < numberOfAccomodationWithFamilies):
 		# family = Family({criterias["income"]:int(random.uniform(20,50))},3)
-		family = Family({criterias["type"]:int(random.choice([-1, 1]))},3)
+		family = Family({criterias["type"]:criterias["type"].randValue()},10)
 		while(True):
 			i = math.floor(random.uniform(0,sizeMatrix))
 			j = math.floor(random.uniform(0,sizeMatrix))

@@ -3,7 +3,7 @@ from chart import *
 import random, sys, math
 
 def do(data, canvas, width, g, after=0):
-  swapr(data)
+  # swapr(data)
   canvas.delete('all')
   chart(data, canvas, width, g)
   canvas.update()
@@ -13,7 +13,7 @@ def randomize(size):
   data = {}
   for x in range(size):
     for y in range(size):
-      data[(x, y)] = random.random()
+      data[(x, y)] = random.choice([random.random(), None])
   return data
 
 def swapr(data):

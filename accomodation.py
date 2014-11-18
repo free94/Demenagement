@@ -23,7 +23,7 @@ class Accomodation :
 		#dictionnaire associant à chaque critère la moyenne des valeurs des familles du logement
 		self.criteriaAveragesInAcc = {}
 		for criteria in criterias:
-			self.criteriaAveragesInAcc[criteria] = 0
+			self.criteriaAveragesInAcc[criteria] = None
 		#coordonnées du logement sur la grille
 		self.coordinates = coordinates
 
@@ -31,7 +31,7 @@ class Accomodation :
 		if(self.maxFamily > len(self.listOfFamily)):
 			family.accomodation = self
 			self.listOfFamily.append(family)
-			self.updateAverages()
+			self.addInAverage(family)
 			return True
 		else:
 			return False
@@ -39,11 +39,20 @@ class Accomodation :
 	def removeFamily(self, family):
 		try:
 			self.listOfFamily.remove(family)
-			self.updateAverages()
+			self.removeInAverage(family)
 			return True
 		except Exception as e:
 			print ("impossible de supprimer l'element "+ str(family) +"de la liste -> " + str(e))
 			return False
+
+	def addInAverage(self, family):
+		self.criteriaAveragesInAcc = { c : ((0 if a is None else a)*(len(self.listOfFamily)-1) + family.criterias[c]) / len(self.listOfFamily) for c,a in self.criteriaAveragesInAcc.items()}
+
+	def removeInAverage(self, family):
+		if not self.empty():
+			self.criteriaAveragesInAcc = { c : (a *(len(self.listOfFamily)-1) - family.criterias[c]) / len(self.listOfFamily) for c,a in self.criteriaAveragesInAcc.items()}
+		else:
+			self.criteriaAveragesInAcc = { c : 0 for c in self.criteriaAveragesInAcc.keys() }
 
 	#mise à jour des valeurs moyennes des critères pour le logement.
 	def updateAverages(self):
@@ -60,12 +69,12 @@ class Accomodation :
 				self.criteriaAveragesInAcc[criteria] = self.criteriaAveragesInAcc[criteria] / len(self.listOfFamily)
 
 	#score de l'immeuble selon ses valeurs moyennes de critères et les valeurs de la famille qui veut y emmenager
-	#le parametre fromAcc est le logement à partir duquel le score est calculé. Dans le calcul du score intrinsèque, fromAcc doit être égal à self. Dans le calcul de l'influence, on fromAcc est le logement influencé par self.
-	def getScore(self, familyValues, fromAcc):
-		score = 0
+
+	def getScores(self, familyValues):
+		scores = {}
 		for criteria in self.criteriaAveragesInAcc.keys():
-			score += criteria.weight * criteria.score(self.criteriaAveragesInAcc[criteria], familyValues[criteria]) * criteria.influence(self.distance(fromAcc))
-		return score
+			scores[criteria] = criteria.score(self.criteriaAveragesInAcc[criteria], familyValues[criteria])
+		return scores
 
 	#score de l'immeuble ajusté par celui de ses voisins
 	"""def getScoreWithDistrict(self, distanceLimit, familyValues, sizeMatrix, matrix):
@@ -83,6 +92,9 @@ class Accomodation :
 		"""
 	def full(self):
 		return self.maxFamily == len(self.listOfFamily)
+
+	def empty(self):
+		return not self.listOfFamily
 
 	#retourne la distance entre self et l'accomodation en parametre
 	def distance(self, accomodation):

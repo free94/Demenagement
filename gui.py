@@ -31,7 +31,6 @@ def onmove(event, canvas):
   for d in canvas.find_enclosed(lx, ly, ux, uy):
     canvas.itemconfig(d, fill='#000')
 
-size = 32
 csize = 640
 
 init()
@@ -41,5 +40,10 @@ root.wm_title('Window')
 canvas = Canvas(root, width=csize, height=csize)
 canvas.pack()
 # canvas.bind('<Motion>', lambda event : onmove(event, canvas))
-do(canvas, csize, gradients['cyan to black'])
+layer = StringVar(root)
+layers = [c for c in criterias.keys()]
+layer.set(layers[0])
+layers = OptionMenu(root, layer,*layers)
+layers.pack()
+do(canvas, csize, gradients['types'])
 mainloop()
