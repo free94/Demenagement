@@ -10,8 +10,8 @@ from functools import cmp_to_key
 import math
 import random
 
-sizeMatrix = 8
-sizeMaxAccomodation = 2
+sizeMatrix = 10
+sizeMaxAccomodation = 5
 percentOfFamilies = 0.2
 numberOfRounds = 200
 firstMatrix = str()

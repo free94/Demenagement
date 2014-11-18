@@ -1,9 +1,11 @@
 from tkinter import *
 from chart import *
 from main import *
+from prog import *
 import random, sys, math
 
 def do(canvas, width, g, after=0):
+
   round()
   canvas.delete('all')
   chart(normalize(matrixCriteria(matrix, criterias['type'])), canvas, width, g)
@@ -31,15 +33,20 @@ def onmove(event, canvas):
   for d in canvas.find_enclosed(lx, ly, ux, uy):
     canvas.itemconfig(d, fill='#000')
 
-size = 32
-csize = 640
+#---------PARSER------------
+args = parser()
+main.sizeMatrix = args.sizeM
+main.sizeMaxAccomodation = args.sizeAccomodation
+main.percentOfFamilies = args.families/100
+size = args.sizeW
+#----------------------------
 
 init()
 
 root = Tk()
 root.wm_title('Window')
-canvas = Canvas(root, width=csize, height=csize)
+canvas = Canvas(root, width=size, height=size)
 canvas.pack()
 # canvas.bind('<Motion>', lambda event : onmove(event, canvas))
-do(canvas, csize, gradients['cyan to black'])
+do(canvas, size, gradients['cyan to black'])
 mainloop()
