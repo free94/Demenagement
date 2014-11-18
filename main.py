@@ -16,6 +16,8 @@ percentOfFamilies = 0.2
 numberOfRounds = 200
 firstMatrix = str()
 
+#TUTO COMPLET ET CLAIR POUR OPTIMISATION PYTHON : http://nliautaud.fr/wiki/articles/python_benchmark
+
 def move(family):
 	scores = computeScores(family.criterias)
 	for destination in sorted(matrix.values(), key=lambda x: scores[x.coordinates], reverse=True):
