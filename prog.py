@@ -10,16 +10,16 @@ sizeWindow 			= Default Value 640
 """
 def parser():
 
-	parser = argparse.ArgumentParser(description='Required parameters')
+	parser = argparse.ArgumentParser(description='Optional parameters')
 
 	#le simple fait d'ajouter "--" devant le nom de l'argument indique qu'il est optionnel, on ajoute alors le champ default =
 	parser.add_argument('--sizeM',
 						type=int, 
 						action="store", 
 						default=8, 
-						help='an integer for the height and width of the matrix')
+						help='Integer for the height and width of the matrix')
 
-	parser.add_argument('--sizeAccomodation', 
+	parser.add_argument('--sizeA', 
 						type=int, 
 						action="store", 
 						default=5, 
@@ -29,19 +29,31 @@ def parser():
 						type = int, 
 						action ="store", 
 						default=20, 
-						help="percentage of accomodation full of family")
+						help="Percentage of accomodation with family")
 
 	parser.add_argument('--sizeW',
 						type = int, 
 						action ="store", 
 						default=640, 
-						help="size of the window")
+						help="Size of the window")
 
 	parser.add_argument('--distance',
 						type = str, 
 						action ="store", 
 						default="exp", 
-						help="decreasing function : exp, lin or inv")
+						help="Decreasing function of distance impact: exp, lin or inv")
+
+	parser.add_argument('--function',
+						type = str, 
+						action ="store", 
+						default="egalize", 
+						help="Possible values : maximize, minimize, egalize")
+
+	parser.add_argument('--criteria',
+						type = str, 
+						action ="store", 
+						default="income", 
+						help="income or type")
 
 	args = parser.parse_args()
 	return args

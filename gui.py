@@ -7,7 +7,7 @@ import random, sys, math
 def do(canvas, width, g, after=0):
   round()
   canvas.delete('all')
-  data = normalize(matrixCriteria(matrix, criterias['income']))
+  data = normalize(matrixCriteria(matrix, criterias[args.criteria]))
   chart(data, canvas, width, g)
   canvas.update()
   root.after(after, do, canvas, width, g)
@@ -42,10 +42,12 @@ def onkey(event, canvas, width, g):
 
 args = parser()
 main.sizeMatrix = args.sizeM
-main.sizeMaxAccomodation = args.sizeAccomodation
+main.sizeMaxAccomodation = args.sizeA
 main.percentOfFamilies = args.families/100
 size = args.sizeW
 main.distanceFunction = args.distance
+main.function = args.function
+main.critere = args.criteria
 init()
 
 root = Tk()

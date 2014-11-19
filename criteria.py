@@ -3,7 +3,7 @@
 
 import math
 import random
-
+import main
 class Criteria:
 	def __init__(self, weight, valuesRange, rule, influence):
 		self.weight = weight
@@ -42,7 +42,7 @@ class Criteria:
 		return math.exp(-distance)
 	@staticmethod
 	def lin(distance):
-		return (-distance)
+		return -distance+main.sizeMatrix
 	@staticmethod
 	def inv(distance):
 		if(distance > 0):

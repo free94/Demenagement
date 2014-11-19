@@ -15,6 +15,8 @@ percentOfFamilies = 0.2
 numberOfRounds = 200
 firstMatrix = str()
 distanceFunction = str()
+function = str()
+critere = str()
 
 #TUTO COMPLET ET CLAIR POUR OPTIMISATION PYTHON : http://nliautaud.fr/wiki/articles/python_benchmark
 
@@ -81,7 +83,18 @@ def init():
 	else:
 		c = Criteria.lin
 
-	criterias["income"] = Criteria(1, [20,50], Criteria.egalize, c)
+
+	if(function == "maximize"):
+		f = Criteria.maximize
+	elif(function == "minimize"):
+		f = Criteria.minimize
+	else:
+		f = Criteria.egalize
+
+	if(critere == "income"):
+		criterias["income"] = Criteria(1, [20,50], f, c)
+	else:
+		criterias["type"] 	= Criteria(1, [1,2], f, c)
 
 	for i in range(sizeMatrix):
 		for j in range(sizeMatrix):
@@ -93,7 +106,7 @@ def init():
 	count = 0
 	while(count < numberOfAccomodationWithFamilies):
 		# family = Family({criterias["income"]:int(random.uniform(20,50))},3)
-		family = Family({criterias["income"]:criterias["income"].randValue()},10)
+		family = Family({criterias[critere]:criterias[critere].randValue()},10)
 		while(True):
 			i = math.floor(random.uniform(0,sizeMatrix))
 			j = math.floor(random.uniform(0,sizeMatrix))
