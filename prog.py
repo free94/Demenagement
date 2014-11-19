@@ -37,6 +37,12 @@ def parser():
 						default=640, 
 						help="size of the window")
 
+	parser.add_argument('--distance',
+						type = str, 
+						action ="store", 
+						default="exp", 
+						help="decreasing function : exp, lin or inv")
+
 	args = parser.parse_args()
 	return args
 	#print(args.sizeW)

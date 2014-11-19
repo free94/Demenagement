@@ -45,7 +45,7 @@ main.sizeMatrix = args.sizeM
 main.sizeMaxAccomodation = args.sizeAccomodation
 main.percentOfFamilies = args.families/100
 size = args.sizeW
-
+main.distanceFunction = args.distance
 init()
 
 root = Tk()

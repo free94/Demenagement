@@ -14,6 +14,7 @@ sizeMaxAccomodation = 1
 percentOfFamilies = 0.2
 numberOfRounds = 200
 firstMatrix = str()
+distanceFunction = str()
 
 #TUTO COMPLET ET CLAIR POUR OPTIMISATION PYTHON : http://nliautaud.fr/wiki/articles/python_benchmark
 
@@ -73,7 +74,14 @@ numberOfAccomodationWithFamilies = 0
 def init():
 
 	#criterias["type"] 	= Criteria(1, [1,2], Criteria.egalize, Criteria.exp)
-	criterias["income"] = Criteria(1, [20,50], Criteria.minimize, Criteria.exp)
+	if(distanceFunction == "inv"):
+		c = Criteria.inv
+	elif(distanceFunction == "exp"):
+		c = Criteria.exp
+	else:
+		c = Criteria.lin
+
+	criterias["income"] = Criteria(1, [20,50], Criteria.egalize, c)
 
 	for i in range(sizeMatrix):
 		for j in range(sizeMatrix):

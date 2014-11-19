@@ -40,3 +40,12 @@ class Criteria:
 	@staticmethod
 	def exp(distance):
 		return math.exp(-distance)
+	@staticmethod
+	def lin(distance):
+		return (-distance)
+	@staticmethod
+	def inv(distance):
+		if(distance > 0):
+			return 1/distance
+		else:
+			return 1
