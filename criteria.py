@@ -8,6 +8,7 @@ class Criteria:
 	def __init__(self, weight, valuesRange, rule, influence):
 		self.weight = weight
 		self.valuesRange = valuesRange
+		self.average = (valuesRange[1] + valuesRange[0]) / 2
 		self.rule = rule # minimize, egalize, maximize
 		self.influence = influence #fonction
 
@@ -33,7 +34,7 @@ class Criteria:
 
 	@staticmethod
 	def minimize(values):
-		return 1-Criteria.maximise(values)
+		return 1-Criteria.maximize(values)
 
 #influences
 	@staticmethod

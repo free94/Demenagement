@@ -24,18 +24,15 @@ def fcount():
 	return c
 
 def move(family):
+	family.accomodation.removeFamily(family)
 	scores = computeScores(family)
 	# print(family.accomodation.coordinates)
 	# for d in sorted(matrix.values(), key=lambda x: scores[x.coordinates], reverse=True):
 	# 	print((d.coordinates, scores[d.coordinates]))
 	# sys.exit()
 	for destination in sorted(matrix.values(), key=lambda x: scores[x.coordinates], reverse=True):
-		if destination == family.accomodation:
-			return False
 		if(not destination.full()):
-			temp = family.accomodation
 			destination.addFamily(family)
-			temp.removeFamily(family)
 			return True
 	return False
 
@@ -44,18 +41,15 @@ def computeScores(family):
 	inherentScores = {}
 	# print(family.accomodation.coordinates)
 	for p, a in matrix.items():
-		if a.empty():
-			continue
-		inherentScores[p] = a.getMyScores(family.criterias) if family.accomodation is a else a.getScores(family.criterias)
+		inherentScores[p] = a.getScores(family.criterias)
 		# print((p, inherentScores[p]))
 	# influence des logements voisins
-	# sys.exit()
 	scores = {}
 	for p1, a1 in matrix.items():
 		scores[p1] = 0
 		for p2, a2 in matrix.items():
-			if a2.empty() or family.accomodation is a2:
-				continue
+			#if family.accomodation is a2:
+			#	continue
 			for criteria in criterias.values():
 				scores[p1] += criteria.weight * inherentScores[p2][criteria] *  criteria.influence(a1.distance(a2))
 		scores[p1] /= sizeMatrix ** 2
@@ -66,60 +60,6 @@ def matrixCriteria(matrix, criteria):
 
 def matrixNbFamilies(matrix, criteria):
 	return {k : len(v.listOfFamily) for k,v in matrix}
-
-
-#affichage matrice avec mise en relief des n tuples de la liste
-def printMatrix(matrix, listTuple):
-	#S'il n'y a que deux tuples à mettre en relief on est dans le cas : départ - destination -> 2 couleurs differentes
-	if(len(listTuple) == 2):
-		for i in range(sizeMatrix):
-			for j in range(sizeMatrix):
-				if((i,j) == listTuple[0]):
-					couleur = "\033[94m" #blue = coordinates of the family
-				elif((i,j) == listTuple[1]):
-					couleur = "\033[92m" #green = destination
-				else:
-					couleur = ""
-				print(couleur + str(len(matrix[(i,j)].listOfFamily)) + "/" + str(matrix[(i,j)].maxFamily) + "\033[0m", end=' ')
-			print("")
-		print("")
-	#Si on a + de 2 tuples a mettre en valeur par la couleur, on affiche tous ces tuples d'une couleur particuliere sans distinction
-	elif(len(listTuple) > 2):
-		for i in range(sizeMatrix):
-			for j in range(sizeMatrix):
-				if((i,j) in listTuple):
-					couleur = "\033[94m" #red = coordinates of one of the families to print
-				else:
-					couleur = ""
-				print(couleur + str(len(matrix[(i,j)].listOfFamily)) + "/" + str(matrix[(i,j)].maxFamily) + "\033[0m", end=' ')
-			print("")
-		print("")
-
-
-def printMatrixByType():
-	first = False
-	#si c'est la première matrice
-	global firstMatrix
-	if(not firstMatrix):
-		first = True
-		firstMatrix += "\n**********The first matrix was **********\n\n"
-	for i in range(sizeMatrix):
-		for j in range(sizeMatrix):
-			if(len(matrix[(i,j)].listOfFamily) == 0):
-				couleur = "\033[0m" #defautl color
-			elif(matrix[(i,j)].criteriaAveragesInAcc[criterias["type"]] > 1.5):
-				couleur = "\033[94m" #blue
-			else:
-				couleur = "\033[92m" #green
-			print(couleur + str(len(matrix[(i,j)].listOfFamily)) + "/" + str(matrix[(i,j)].maxFamily) + "\033[0m", end=' ')
-			if(first):
-					firstMatrix += couleur + str(len(matrix[(i,j)].listOfFamily)) + "/" + str(matrix[(i,j)].maxFamily) + "\033[0m" + " "
-		print("")
-		if(first):
-			firstMatrix += "\n"
-	print("")
-
-
 
 #------------------------------------------------------------------------------------------------------------------------
 #----------------------------------------------------------main----------------------------------------------------------
@@ -132,8 +72,8 @@ numberOfAccomodationWithFamilies = 0
 
 def init():
 
-	criterias["type"] 	= Criteria(1, [1,2], Criteria.egalize, Criteria.exp)
-	# criterias["income"] = Criteria(0.5, [20,50], Criteria.egalize, Criteria.exp)
+	#criterias["type"] 	= Criteria(1, [1,2], Criteria.egalize, Criteria.exp)
+	criterias["income"] = Criteria(1, [20,50], Criteria.minimize, Criteria.exp)
 
 	for i in range(sizeMatrix):
 		for j in range(sizeMatrix):
@@ -145,7 +85,7 @@ def init():
 	count = 0
 	while(count < numberOfAccomodationWithFamilies):
 		# family = Family({criterias["income"]:int(random.uniform(20,50))},3)
-		family = Family({criterias["type"]:criterias["type"].randValue()},10)
+		family = Family({criterias["income"]:criterias["income"].randValue()},10)
 		while(True):
 			i = math.floor(random.uniform(0,sizeMatrix))
 			j = math.floor(random.uniform(0,sizeMatrix))
@@ -156,6 +96,8 @@ def init():
 
 
 def round():
-	for f in Family.allFamilies:
+	l = Family.allFamilies
+	random.shuffle(l)
+	for f in l:
 		if(f.decision()):
 			move(f)

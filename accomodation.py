@@ -23,36 +23,36 @@ class Accomodation :
 		#dictionnaire associant à chaque critère la moyenne des valeurs des familles du logement
 		self.criteriaAveragesInAcc = {}
 		for criteria in criterias:
-			self.criteriaAveragesInAcc[criteria] = None
+			self.criteriaAveragesInAcc[criteria] = criteria.average
 		#coordonnées du logement sur la grille
 		self.coordinates = coordinates
 
 	def addFamily(self, family):
 		if(self.maxFamily > len(self.listOfFamily)):
 			family.accomodation = self
-			self.listOfFamily.append(family)
 			self.addInAverage(family)
+			self.listOfFamily.append(family)
 			return True
 		else:
 			return False
 
 	def removeFamily(self, family):
 		try:
-			self.listOfFamily.remove(family)
 			self.removeInAverage(family)
+			self.listOfFamily.remove(family)
 			return True
 		except Exception as e:
 			print ("impossible de supprimer l'element "+ str(family) +"de la liste -> " + str(e))
 			return False
 
 	def addInAverage(self, family):
-		self.criteriaAveragesInAcc = { c : ((0 if a is None else a)*(len(self.listOfFamily)-1) + family.criterias[c]) / len(self.listOfFamily) for c,a in self.criteriaAveragesInAcc.items()}
+		self.criteriaAveragesInAcc = { c : (a*len(self.listOfFamily) + family.criterias[c]) / (len(self.listOfFamily)+1) for c,a in self.criteriaAveragesInAcc.items()}
 
 	def removeInAverage(self, family):
-		if not self.empty():
-			self.criteriaAveragesInAcc = { c : (a *(len(self.listOfFamily)-1) - family.criterias[c]) / len(self.listOfFamily) for c,a in self.criteriaAveragesInAcc.items()}
+		if len(self.listOfFamily) > 1:
+			self.criteriaAveragesInAcc = { c : (a*len(self.listOfFamily) - family.criterias[c]) / (len(self.listOfFamily)-1) for c,a in self.criteriaAveragesInAcc.items()}
 		else:
-			self.criteriaAveragesInAcc = { c : None for c in self.criteriaAveragesInAcc.keys() }
+			self.criteriaAveragesInAcc = { c : c.average for c in self.criteriaAveragesInAcc.keys() }
 
 	#mise à jour des valeurs moyennes des critères pour le logement.
 	def updateAverages(self):
@@ -76,15 +76,14 @@ class Accomodation :
 			scores[criteria] = criteria.score(self.criteriaAveragesInAcc[criteria], familyValues[criteria])
 		return scores
 
-	def getMyScores(self, familyValues):
-		scores = {}
-		for criteria in self.criteriaAveragesInAcc.keys():
-			if len(self.listOfFamily) - 1 > 0:
-				value = (self.criteriaAveragesInAcc[criteria] * (len(self.listOfFamily)) - familyValues[criteria]) / (len(self.listOfFamily) - 1)
-				scores[criteria] = criteria.score(value, familyValues[criteria])
-			else:
-				scores[criteria] = None
-		return scores
+	# def getMyScores(self, familyValues):
+	# 	scores = {}
+	# 	for criteria in self.criteriaAveragesInAcc.keys():
+	# 		if len(self.listOfFamily) - 1 > 0:
+	# 			scores[criteria] = criteria.score(self.criteriaAveragesInAcc[criteria], familyValues[criteria])
+	# 		else:
+	# 			scores[criteria] = criteria.average
+	# 	return scores
 
 	#score de l'immeuble ajusté par celui de ses voisins
 	"""def getScoreWithDistrict(self, distanceLimit, familyValues, sizeMatrix, matrix):

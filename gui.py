@@ -7,7 +7,7 @@ import random, sys, math
 def do(canvas, width, g, after=0):
   round()
   canvas.delete('all')
-  data = normalize(matrixCriteria(matrix, criterias['type']))
+  data = normalize(matrixCriteria(matrix, criterias['income']))
   chart(data, canvas, width, g)
   canvas.update()
   root.after(after, do, canvas, width, g)
