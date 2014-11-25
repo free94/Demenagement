@@ -88,6 +88,8 @@ def init():
 		f = Criteria.maximize
 	elif(function == "minimize"):
 		f = Criteria.minimize
+	elif(function == "inegalize"):
+		f = Criteria.inegalize
 	else:
 		f = Criteria.egalize
 
